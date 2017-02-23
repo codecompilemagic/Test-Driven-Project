@@ -14,7 +14,7 @@ class HomePageTest(TestCase):
 
 	def test_root_url_resolves_to_home_page_view(self):
 		""" resolve() is the function Django uses internally to
-			resolve URLs and fine what view function it should map to.
+			resolve URLs and find what view function it should map to.
 			'/' represents the root of the site. """
 		found = resolve('/')
 		self.assertEqual(found.func, home_page)

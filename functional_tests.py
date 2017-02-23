@@ -1,4 +1,7 @@
 from selenium import webdriver
+""" Keys allow us to use input keys like ENTER, Ctrl, etc """
+from selenium.webdriver.common.keys import Keys
+
 import unittest
 
 ###### The comments inside '#' are used for USER STORY to build the test
@@ -40,17 +43,42 @@ class NewVisitorTest(unittest.TestCase):
 
 			self.fail just fails no matter what, producing the error message given """
 		self.assertIn('To-Do', self.browser.title)
-		self.fail('Finish the test!')
+		""" find_element_by_tag_name() returns an element
+			and raises an exception if it can't find it """
+		header_text = self.browser.find_element_by_tag_name('h1').text
+		self.assertIn('To-Do', header_text)
+		
 
 		# User is invited to enter a to-do item straight away
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		self.assertEqual(
+			inputbox.get_attribute('placeholder'),
+			'Enter a to-do item'
+		)
 
 		# User types "Buy apples and milk" into a text box
+		inputbox.send_keys('Buy apples and milk')
 
 		# When the user hits enter, the page updates, and now the page lists
 		# "1: Buy apples and milk" as an item in a to-do list
+		inputbox.send_keys(Keys.ENTER)
+
+		table = self.browser.find_element_by_id('id_list_table')
+		""" find_elements_by_tag_name() returns a list, which may be empty """
+		rows = table.find_elements_by_tag_name('tr')
+
+		""" any() Python function will return True when atleast 
+			one of the elements is found/exists.
+			Inside the any() function is a generator expresion
+			<--- Note: Python also has a all() function ---> """
+		self.assertTrue(
+			any(row.text == '1.: Buy apples and milk' for row in rows)
+		)
 
 		# There is still a text box inviting/prompting the user to add another item
 		# The user enters "Make apple pie for dessert"
+
+		self.fail('Finish the test!')
 
 		# The user is not sure if the site will remember the list. Then the user sees
 		# that the site has generated a unique URL for user -- there is some
