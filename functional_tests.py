@@ -13,7 +13,7 @@ class NewVisitorTest(unittest.TestCase):
 
 	""" Currently using setUp() to start our browser """
 	def setUp(self):
-		self.browser =  webdriver.Chrome('C:\Users\Zigmyal\Desktop\dir\chromedriver_win32\chromedriver')
+		self.browser = webdriver.Chrome('C:\Users\Zigmyal\Desktop\dir\chromedriver_win32\chromedriver')
 		""" implicitly_wait() tells Selenium to wait for 
 			given seconds if needed.
 			However, it is best for small apps. For more complex
