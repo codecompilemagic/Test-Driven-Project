@@ -8,6 +8,7 @@ from django.core.urlresolvers import resolve
 from lists.views import home_page
 
 from django.http import HttpRequest
+from django.template.loader import render_to_string
 
 # Create your tests here.
 class HomePageTest(TestCase):
@@ -32,10 +33,18 @@ class HomePageTest(TestCase):
 		
 			we use b'' syntax to compare because response.content 
 			is RAW BYTES, not a Python string """
-		self.assertTrue(response.content.startswith(b'<html>'))
+		# self.assertTrue(response.content.startswith(b'<html>'))
+
+		expected_html = render_to_string('home.html')
 
 		""" We want the <title> tag in somewhere in the middle
 			with the words 'To-Do lists' in it because that's what
 			we specified in our functional test. """
-		self.assertIn(b'<title>To-Do lists</title>', response.content)
-		self.assertTrue(response.content.endswith(b'</html>'))
+		### (1) testing bytes with bytes here ###
+		# self.assertIn(b'<title>To-Do lists</title>', response.content)
+		# self.assertTrue(response.content.endswith(b'</html>'))
+
+		""" We use .decode() to convert the response.content bytes into
+			a Python unicode string, which allows us to compare strings
+			with strings, instead of bytes with bytes like in (1) """
+		self.assertEqual(response.content.decode(), expected_html)

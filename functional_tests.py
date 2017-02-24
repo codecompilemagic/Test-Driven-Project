@@ -72,7 +72,8 @@ class NewVisitorTest(unittest.TestCase):
 			Inside the any() function is a generator expresion
 			<--- Note: Python also has a all() function ---> """
 		self.assertTrue(
-			any(row.text == '1.: Buy apples and milk' for row in rows)
+			any(row.text == '1.: Buy apples and milk' for row in rows),
+			'New to-do item did not appear in table'	# Error message to display if not found
 		)
 
 		# There is still a text box inviting/prompting the user to add another item
