@@ -105,9 +105,18 @@ class HomePageTest(TestCase):
 		# self.assertEqual(response.content.decode(), expected_html)
 
 		# no longer expect a response with a .content rendered by template
-		# Response will represent an HTTP redirect,
-		# so we should have status code 302, and points the browser
-		# to a new location
+	# Response will represent an HTTP redirect,
+	# so we should have status code 302, and points the browser
+	# to a new location
+	""" Good unit testing practice says
+		that each test should only test one thing """
+	def test_home_page_redirects_after_POST(self):
+		request = HttpRequest()
+		request.method = 'POST'
+		request.POST['item_text'] = 'A new list item'
+
+		response = home_page(request)
+
 		self.assertEqual(response.status_code, 302)
 		self.assertEqual(response['location'], '/')
 
