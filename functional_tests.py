@@ -27,6 +27,11 @@ class NewVisitorTest(unittest.TestCase):
 	def tearDown(self):
 		self.browser.quit()
 
+	def check_for_row_in_list_table(self, row_text):
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn(row_text, [row.text for row in rows])
+
 	""" Any method whose name starts with test is a test method
 		and will be run by the test runner.
 		You can have more than one test_ method per class.
@@ -64,9 +69,9 @@ class NewVisitorTest(unittest.TestCase):
 		# import time
 		# time.sleep(8)
 
-		table = self.browser.find_element_by_id('id_list_table')
+		# table = self.browser.find_element_by_id('id_list_table')
 		""" find_elements_by_tag_name() returns a list, which may be empty """
-		rows = table.find_elements_by_tag_name('tr')
+		# rows = table.find_elements_by_tag_name('tr')
 
 		""" any() Python function will return True when atleast 
 			one of the elements is found/exists.
@@ -79,10 +84,25 @@ class NewVisitorTest(unittest.TestCase):
 		# 	'New to-do item did not appear in table -- it was: \n%s' %table.text,
 		# )
 
-		self.assertIn('1: Buy apples and milk', [row.text for row in rows])
+		# self.assertIn('1: Buy apples and milk', [row.text for row in rows])
+		self.check_for_row_in_list_table('1: Buy apples and milk')
 
 		# There is still a text box inviting/prompting the user to add another item
 		# The user enters "Make apple pie for dessert"
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('Make apple pie for dessert')
+		inputbox.send_keys(Keys.ENTER)
+
+		# The page updates again, and now shows both items on her list
+		""" Code check """
+		# table = self.browser.find_element_by_id('id_list_table')
+		# rows = table.find_elements_by_tag_name('tr')
+		# self.assertIn('1: Buy apples and milk', [row.text for row in rows])
+		# self.assertIn('2: Make apple pie for dessert', [row.text for row in rows])
+
+		""" Using helper method to replace the Code check """
+		self.check_for_row_in_list_table('1: Buy apples and milk')
+		self.check_for_row_in_list_table('2: Make apple pie for dessert')
 
 		self.fail('Finish the test!')
 
