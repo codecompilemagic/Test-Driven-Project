@@ -51,10 +51,7 @@ class NewVisitorTest(unittest.TestCase):
 
 		# User is invited to enter a to-do item straight away
 		inputbox = self.browser.find_element_by_id('id_new_item')
-		self.assertEqual(
-			inputbox.get_attribute('placeholder'),
-			'Enter a to-do item'
-		)
+		self.assertEqual(inputbox.get_attribute('placeholder'), 'Enter a to-do item')
 
 		# User types "Buy apples and milk" into a text box
 		inputbox.send_keys('Buy apples and milk')
@@ -62,6 +59,10 @@ class NewVisitorTest(unittest.TestCase):
 		# When the user hits enter, the page updates, and now the page lists
 		# "1: Buy apples and milk" as an item in a to-do list
 		inputbox.send_keys(Keys.ENTER)
+
+		""" Using time.sleep() to pause the test during execution """
+		# import time
+		# time.sleep(8)
 
 		table = self.browser.find_element_by_id('id_list_table')
 		""" find_elements_by_tag_name() returns a list, which may be empty """
@@ -71,10 +72,14 @@ class NewVisitorTest(unittest.TestCase):
 			one of the elements is found/exists.
 			Inside the any() function is a generator expresion
 			<--- Note: Python also has a all() function ---> """
-		self.assertTrue(
-			any(row.text == '1.: Buy apples and milk' for row in rows),
-			'New to-do item did not appear in table'	# Error message to display if not found
-		)
+		############# modifying the function below #############	
+		# self.assertTrue(
+		# 	any(row.text == '1: Buy apples and milk' for row in rows),
+		# 	# Error message to display if not found
+		# 	'New to-do item did not appear in table -- it was: \n%s' %table.text,
+		# )
+
+		self.assertIn('1: Buy apples and milk', [row.text for row in rows])
 
 		# There is still a text box inviting/prompting the user to add another item
 		# The user enters "Make apple pie for dessert"
