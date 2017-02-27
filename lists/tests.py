@@ -86,7 +86,7 @@ class HomePageTest(TestCase):
 		request.POST['item_text'] = 'A new list item'
 
 		# The single statement below represents Exercise
-		""" Calling home_page(), te function under test """
+		""" Calling home_page(), to function under test """
 		response = home_page(request)
 
 		# Check if a new Item has been saved to the database
@@ -124,3 +124,13 @@ class HomePageTest(TestCase):
 		request = HttpRequest()
 		home_page(request)
 		self.assertEqual(Item.objects.count(), 0)
+
+	def test_home_page_displays_all_list_items(self):
+		Item.objects.create(text=' Item 1')
+		Item.objects.create(text=' Item 2')
+
+		request = HttpRequest()
+		response = home_page(request)
+
+		self.assertIn('Item 1', response.content.decode())
+		self.assertIn('Item 2', response.content.decode())

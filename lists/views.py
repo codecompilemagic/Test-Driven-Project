@@ -22,4 +22,5 @@ def home_page(request):
 	# else:
 		# new_item_text = ''
 	# return render(request, 'home.html', {'new_item_text': new_item_text, })
-	return render(request, 'home.html')
+	items = Item.objects.all()
+	return render(request, 'home.html', {'items': items})
