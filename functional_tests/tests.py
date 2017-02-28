@@ -4,12 +4,15 @@ from selenium.webdriver.common.keys import Keys
 
 import unittest
 
+from django.test import LiveServerTestCase
+
 ###### The comments inside '#' are used for USER STORY to build the test
 ###### The comments inside '"""' are used to describe the function or application usage 
 
 
 """ The test Class inherits from unittest """
-class NewVisitorTest(unittest.TestCase):
+# class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 	""" setUp() and tearDown() are special methods which get run
 		before and after each test.
 		They are similar to try/except """
@@ -39,7 +42,8 @@ class NewVisitorTest(unittest.TestCase):
 	def test_can_start_a_list_and_retrieve_it_later(self):
 		# User visits to-do app
 		# User goes to check the homepage
-		self.browser.get('http://localhost:8000')
+		# self.browser.get('http://localhost:8000')
+		self.browser.get(self.live_server_url)
 
 		# User notices the page title and header mention to-do lists
 		""" Instead of --->  assert 'To-Do' in browser.title, "Browser title was " + browser.title
@@ -115,7 +119,7 @@ class NewVisitorTest(unittest.TestCase):
 		# Satisfied, the user goes to take a bath
 		# browser.quit()
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 	""" unittest.main() launches the unittest test runner
 		which will automatically find test classes and methods
 		in the file and run them.
@@ -123,4 +127,4 @@ if __name__ == '__main__':
 		warning = 'ignore' surppresses a ResourceWarning. 
 		Remove it if no warning is issued after removal """
 	# unittest.main(warnings='ignore')
-	unittest.main()
+	# unittest.main()
