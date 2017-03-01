@@ -5,6 +5,7 @@ from selenium.webdriver.common.keys import Keys
 import unittest
 
 from django.test import LiveServerTestCase
+import re
 
 ###### The comments inside '#' are used for USER STORY to build the test
 ###### The comments inside '"""' are used to describe the function or application usage 
@@ -24,7 +25,7 @@ class NewVisitorTest(LiveServerTestCase):
 			given seconds if needed.
 			However, it is best for small apps. For more complex
 			and larger apps, explicit wait algorithms are required """
-		self.browser.implicitly_wait(3)
+		# self.browser.implicitly_wait(3)
 
 	""" Currently using tearDown() to stop our browser """
 	def tearDown(self):
@@ -68,6 +69,13 @@ class NewVisitorTest(LiveServerTestCase):
 		# When the user hits enter, the page updates, and now the page lists
 		# "1: Buy apples and milk" as an item in a to-do list
 		inputbox.send_keys(Keys.ENTER)
+		""" Testing for a new url """
+		user_list_url = self.browser.current_url
+		# assertRegex() is a helper function from unittest
+		# that checks whether a string matches a regular expression
+		self.assertRegexpMatches(user_list_url, '/lists/.+')
+
+		
 
 		""" Using time.sleep() to pause the test during execution """
 		# import time
@@ -96,6 +104,8 @@ class NewVisitorTest(LiveServerTestCase):
 		inputbox = self.browser.find_element_by_id('id_new_item')
 		inputbox.send_keys('Make apple pie for dessert')
 		inputbox.send_keys(Keys.ENTER)
+		
+		
 
 		# The page updates again, and now shows both items on her list
 		""" Code check """
@@ -108,7 +118,7 @@ class NewVisitorTest(LiveServerTestCase):
 		self.check_for_row_in_list_table('1: Buy apples and milk')
 		self.check_for_row_in_list_table('2: Make apple pie for dessert')
 
-		self.fail('Finish the test!')
+		# self.fail('Finish the test!')
 
 		# The user is not sure if the site will remember the list. Then the user sees
 		# that the site has generated a unique URL for user -- there is some
@@ -118,6 +128,41 @@ class NewVisitorTest(LiveServerTestCase):
 
 		# Satisfied, the user goes to take a bath
 		# browser.quit()
+
+
+
+		###### Now a new user, user2, comes along to the site #######
+		## We use a new browser session to make sure that no information
+		## of the previous user is coming through from cookies, etc
+		self.browser.quit()
+
+		self.browser = webdriver.Chrome('C:\Users\Zigmyal\Desktop\dir\chromedriver_win32\chromedriver')
+
+		# User2 visits the home page. There is no sing of previous users list
+		self.browser.get(self.live_server_url)
+		page_text = self.browser.find_element_by_tag_name('body').text
+		
+		self.assertNotIn('Buy apples and milk', page_text)
+		self.assertNotIn('Make apple pie for dessert', page_text)
+
+
+		# User2 starts a new list by entering a new item
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('Buy cookies')
+		inputbox.send_keys(Keys.ENTER)
+
+
+		# User2 gets their own unique URL
+		user2_list_url = self.browser.current_url
+		self.assertRegexpMatches(user2_list_url, '/lists/.+')
+		self.assertNotEqual(user2_list_url, user_list_url)
+
+
+		# Again, there is no trace of previous user's lists
+		page_text = self.browser.find_element_by_tag_name('body').text
+		self.assertNotIn('Buy apples and milk', page_text)
+		self.assertIn('Buy cookies', page_text)
+
 
 # if __name__ == '__main__':
 	""" unittest.main() launches the unittest test runner
